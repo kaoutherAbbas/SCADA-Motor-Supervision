@@ -1,0 +1,137 @@
+.app {
+  text-align: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+  padding: 2rem;
+  background: linear-gradient(135deg, #05040a, #302b63, #06060b);
+  min-height: 100vh;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-shadow: 0 0 10px #fff, 0 0 20px #0f0, 0 0 30px #0f0;
+  margin-bottom: 1rem;
+  position: absolute;
+  top: 2rem;
+}
+
+.status {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  position: absolute;
+  top: 5.5rem;
+}
+
+/* Rectangle Encodeur */
+.encoder-container {
+  width: 400px;
+  height: 350px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.3));
+  border: 3px solid rgba(0, 255, 0, 0.3);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px rgba(0, 255, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.encoder-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  text-align: center;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.info-item label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.info-item .value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #00ff00;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+  font-family: 'Courier New', monospace;
+}
+
+.info-item .value.on {
+  color: #00ff00;
+  text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+}
+
+.info-item .value.off {
+  color: #ff0000;
+  text-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+}
+
+/* Boutons */
+.controls {
+  margin-top: 0.2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  padding: 1.2rem 3.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn.on {
+  background: linear-gradient(180deg, #00ff00, #00cc00);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.btn.on:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(0, 255, 0, 0.8);
+}
+
+.btn.off {
+  background: linear-gradient(180deg, #ff0000, #cc0000);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.btn.off:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: scale(0.95);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98) translateY(-2px);
+}
