@@ -3,6 +3,12 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 
+const {
+  saveTelemetry,
+  getRecentTelemetry
+} = require("./database");
+
+
 // Pour OPC UA (à activer si le PLC est disponible)
 const { OPCUAClient, AttributeIds, TimestampsToReturn } = require("node-opcua");
 
@@ -22,6 +28,14 @@ let encoderState = {
 // Intervalle de simulation de l'encodeur
 let encoderInterval = null;
 
+// ===== Historique SQLite =====
+function recordTelemetry() {
+  try {
+    saveTelemetry(encoderState);
+  } catch (err) {
+    console.error("Erreur enregistrement SQLite :", err.message);
+  }
+}
 // ===== OPC UA (Optionnel) =====
 const USE_OPCUA = false; // passer à true si on connecte le PLC
 const PLC_ENDPOINT = "opc.tcp://PLC_IP:4840"; // remplacer PLC_IP par l'IP du PLC
@@ -70,6 +84,7 @@ function startEncoder() {
   if (encoderState.isOn) return;
   encoderState.isOn = true;
   let speedCounter = 0;
+  recordTelemetry();
 
   encoderInterval = setInterval(async () => {
     //mockingggggggggggggggggggggggggggggggggggggggg
@@ -84,7 +99,7 @@ function startEncoder() {
       // Lire depuis le PLC
       await readPLC();
     }
-
+     recordTelemetry();
     io.emit("encoderUpdate", encoderState);
   }, 500);
 
@@ -92,6 +107,8 @@ function startEncoder() {
 
   // Si OPC UA, écrire l'état ON dans le PLC
   if (USE_OPCUA) writePLC(true);
+  recordTelemetry();
+
 }
 
 function stopEncoder() {
@@ -103,12 +120,41 @@ function stopEncoder() {
   encoderState.isOn = false;
   encoderState.speed = 0;
   encoderState.rotation = "Arrêté";
+  recordTelemetry();
   io.emit("encoderUpdate", encoderState);
 
   if (USE_OPCUA) writePLC(false);
 }
 
 // ===== REST API =====
+// Consulter les dernières mesures enregistrées
+app.get("/telemetry", (req, res) => {
+  const requestedLimit = Number(req.query.limit ?? 100);
+
+  if (!Number.isInteger(requestedLimit) || requestedLimit < 1) {
+    return res.status(400).json({
+      success: false,
+      message: "Le paramètre limit doit être un entier positif."
+    });
+  }
+
+  try {
+    const history = getRecentTelemetry(requestedLimit);
+
+    res.json({
+      success: true,
+      count: history.length,
+      telemetry: history
+    });
+  } catch (err) {
+    console.error("Erreur lecture historique :", err.message);
+
+    res.status(500).json({
+      success: false,
+      message: "Impossible de lire l'historique."
+    });
+  }
+});
 app.get("/encoder", (req, res) => res.json(encoderState));
 app.post("/encoder", (req, res) => {
   const { isOn } = req.body;
