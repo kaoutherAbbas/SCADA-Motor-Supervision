@@ -1,4 +1,14 @@
 
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from "recharts";
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { io } from "socket.io-client";
@@ -141,6 +151,66 @@ function App() {
           🔴 Arrêter
         </button>
       </section>
+
+<section className="history-section">
+  <div className="history-heading">
+    <h2>Évolution de la vitesse</h2>
+    <span>Dernières mesures enregistrées</span>
+  </div>
+
+ 
+
+  <div style={{ width: "100%", height: 300 }}>
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart
+        data={history}
+        margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="#393653" />
+
+        <XAxis
+          dataKey="timestamp"
+          tickFormatter={(value) =>
+            new Date(value).toLocaleTimeString("fr-FR")
+          }
+          stroke="#aaa8d1"
+          minTickGap={30}
+        />
+
+        <YAxis
+          domain={[0, "auto"]}
+          stroke="#aaa8d1"
+          unit=" RPM"
+        />
+
+        <Tooltip
+          labelFormatter={(value) =>
+            new Date(value).toLocaleString("fr-FR")
+          }
+          formatter={(value) => [`${value} RPM`, "Vitesse"]}
+          contentStyle={{
+            backgroundColor: "#141426",
+            border: "1px solid #514b79",
+            borderRadius: 8,
+            color: "#fff"
+          }}
+        />
+
+        <Legend />
+
+        <Line
+          type="monotone"
+          dataKey="speed"
+          name="Vitesse moteur"
+          stroke="#00ff91"
+          strokeWidth={2}
+          dot={false}
+          isAnimationActive={false}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+</section>
 
       <section className="history-section">
         <div className="history-heading">
