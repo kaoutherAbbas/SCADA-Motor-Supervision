@@ -24,6 +24,8 @@ function App() {
   const [history, setHistory] = useState([]);
   const [historyError, setHistoryError] = useState("");
   const socketRef = useRef(null);
+  const speedLimit = 100;
+  const speedAlert = encoderData.speed > speedLimit;
 
   // Connexion temps réel au backend
   useEffect(() => {
@@ -105,8 +107,22 @@ function App() {
     <div className="app">
       <header className="main-container">
         <div className="backend-status">
-          Backend : {backendUp ? "🟢 Connecté" : "🔴 Déconnecté"}
+            Backend : {backendUp ? "🟢 Connecté" : "🔴 Déconnecté"}
         </div>
+
+        <div className={`availability-status ${backendUp ? "available" : "unavailable"}`}>
+            Supervision : {backendUp ? "Disponible" : "Indisponible"}
+        </div>
+
+        <div className={`speed-alert ${speedAlert ? "alert-active" : "alert-normal"}`}>
+           {speedAlert
+            ? `⚠️ ALERTE : vitesse supérieure à ${speedLimit} RPM`
+            : `✅ Vitesse normale (limite : ${speedLimit} RPM)`}
+        </div>
+  
+
+
+
 
         <section className="encoder-container">
           <h1 className="title">Supervision moteur</h1>
