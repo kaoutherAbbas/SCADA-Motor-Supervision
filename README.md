@@ -1,32 +1,39 @@
-# Industrial IoT Monitoring Platform
+# SCADA Motor Supervision
 
-A web-based industrial monitoring prototype built with React, Node.js, Express and Socket.IO.
+A web-based industrial motor supervision prototype built with React, Node.js, Express, Socket.IO, and SQLite.
 
-The application provides a dashboard for monitoring and controlling a simulated motor/encoder system in real time. Its architecture is designed to support future integration with industrial automation equipment through OPC UA.
+The application provides a real-time dashboard for monitoring and controlling a **simulated motor/encoder system**. It displays motor status, rotation direction, speed, speed alerts, and historical telemetry.
 
-> **Project status:** Prototype running in simulation mode. A physical PLC is not required. OPC UA integration is not enabled in the current configuration.
+> **Project status:** Prototype running in simulation mode. Physical motor control and real PLC communication are not currently enabled. OPC UA integration is intended for future development.
 
 ## Features
 
-- Real-time dashboard updates using Socket.IO
-- REST API for reading and updating encoder state
+- Real-time motor state updates using Socket.IO
 - Simulated motor start and stop commands
-- Display of motor status, speed and rotation
-- React-based web interface
-- Backend structured for future industrial communication integration
+- Live display of motor speed, status, and rotation direction
+- Speed threshold alerts
+- Backend connection and supervision availability indicators
+- Speed evolution chart
+- Telemetry history stored in SQLite
+- REST API for accessing encoder data and telemetry
+- React-based dashboard
+- Backend architecture prepared for future industrial communication integration
 
 ## Architecture
 
 ```text
 React Dashboard
       |
-      | REST API / Socket.IO
+      | Socket.IO / REST API
       v
 Node.js + Express Backend
       |
       +---- Motor/Encoder Simulator
       |
+      +---- SQLite Telemetry Database
+      |
       +---- Optional OPC UA Integration
+             (not enabled)
 ```
 
 ## Technology Stack
@@ -34,10 +41,12 @@ Node.js + Express Backend
 | Component | Technology |
 |---|---|
 | Frontend | React |
+| Charts | Recharts |
 | Backend | Node.js, Express |
 | Real-time communication | Socket.IO |
+| Database | SQLite |
 | Industrial communication | node-opcua (optional integration) |
-| Simulation | Software-based motor/encoder state |
+| Simulation | Software-based motor/encoder model |
 
 ## Getting Started
 
@@ -45,15 +54,18 @@ Node.js + Express Backend
 
 - Node.js
 - npm
+- Git
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/kaoutherAbbas/web.git
-cd web
+git clone https://github.com/kaoutherAbbas/SCADA-Motor-Supervision.git
+cd SCADA-Motor-Supervision
 ```
 
-### 2. Install and start the backend
+### 2. Start the backend
+
+Open a terminal in the project directory:
 
 ```bash
 cd backend
@@ -61,15 +73,15 @@ npm install
 npm start
 ```
 
-The backend runs at:
+The backend is expected to run at:
 
 `http://localhost:3004`
 
 Keep this terminal open.
 
-### 3. Install and start the frontend
+### 3. Start the frontend
 
-Open a second terminal from the project root:
+Open a second terminal in the project directory:
 
 ```bash
 cd frontend
@@ -83,30 +95,36 @@ The dashboard should be available at:
 
 ## API
 
+The backend exposes REST endpoints for encoder state and telemetry.
+
 | Method | Endpoint | Purpose |
 |---|---|---|
 | GET | `/encoder` | Retrieve the current encoder state |
 | POST | `/encoder` | Update the encoder state |
+| GET | `/telemetry?limit=20` | Retrieve recent telemetry records |
 
 Example request:
 
 ```bash
-curl http://localhost:3004/encoder
+curl http://localhost:3004/telemetry?limit=20
 ```
+
+## Current Limitations
+
+- Motor behavior is simulated in software.
+- The speed alert threshold is a demonstration setting, not a certified industrial safety limit.
+- OPC UA communication is not enabled in the current configuration.
+- No physical PLC or motor integration has been validated.
+- The prototype is not a safety-rated industrial control system.
 
 ## Roadmap
 
 - [ ] Add automated backend tests
-- [ ] Store telemetry history in a database
-- [ ] Add charts and event history to the dashboard
 - [ ] Improve input validation and error handling
-- [ ] Document the API
+- [ ] Document API request and response formats
 - [ ] Add continuous integration with GitHub Actions
 - [ ] Implement and validate OPC UA communication with a real PLC
-
-## Limitations
-
-The current prototype uses a software simulation. It has not been validated as a safety-rated industrial control system. Real PLC communication and physical equipment integration require separate configuration and testing.
+- [ ] Test integration with physical industrial equipment
 
 ## License
 
